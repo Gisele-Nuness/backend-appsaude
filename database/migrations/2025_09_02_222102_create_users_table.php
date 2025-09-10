@@ -20,6 +20,7 @@ return new class extends Migration
             $t->decimal('peso', 5, 2)->nullable();    // ex.: 99.50
             $t->decimal('altura', 4, 2)->nullable();  // ex.: 1.75
             $t->string('tipo_sangue', 5)->nullable(); // ex.: O+, A-
+            $t->string('caminho_foto')->nullable();   // caminho da foto no storage
 
             // cadastro2 (passo 2)
             $t->string('cep', 9)->nullable();

@@ -17,6 +17,7 @@ class UserController extends Controller
             'peso'        => ['nullable', 'numeric'],
             'altura'      => ['nullable', 'numeric'],
             'tipo_sangue' => ['nullable', 'string', 'max:5'],
+            'caminho_foto'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
             'cep'         => ['nullable', 'string', 'max:9'],
             'logradouro'  => ['nullable', 'string'],
             'numero'      => ['nullable', 'string'],
@@ -28,6 +29,12 @@ class UserController extends Controller
 
         // hash da senha antes de salvar
         $data['senha'] = bcrypt($data['senha']);
+        
+        $path = '';
+        if ($request->File('caminho_foto')) {
+            $path = $request->file('caminho_foto')->store('images', 'public');
+        }
+        $data['caminho_foto'] = $path;
 
         $user = User::create($data);
 
