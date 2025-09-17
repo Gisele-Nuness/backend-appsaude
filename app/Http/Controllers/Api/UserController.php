@@ -12,26 +12,27 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'nome'        => ['required', 'string', 'min:2'],
-            'data_nasc'   => ['nullable', 'date'],
-            'peso'        => ['nullable', 'numeric'],
-            'altura'      => ['nullable', 'numeric'],
-            'tipo_sangue' => ['nullable', 'string', 'max:5'],
+            'nome'          => ['required', 'string', 'min:2'],
+            'data_nasc'     => ['nullable', 'date'],
+            'peso'          => ['nullable', 'numeric'],
+            'altura'        => ['nullable', 'numeric'],
+            'tipo_sangue'   => ['nullable', 'string', 'max:5'],
             'caminho_foto'  => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'cep'         => ['nullable', 'string', 'max:9'],
-            'logradouro'  => ['nullable', 'string'],
-            'numero'      => ['nullable', 'string'],
-            'bairro'      => ['nullable', 'string'],
-            'cidade'      => ['nullable', 'string'],
-            'email'       => ['required', 'email', 'unique:users,email'],
-            'senha'       => ['required', 'string', 'min:6'],
+            'cep'           => ['nullable', 'string', 'max:9'],
+            'logradouro'    => ['nullable', 'string'],
+            'numero'        => ['nullable', 'string'],
+            'bairro'        => ['nullable', 'string'],
+            'cidade'        => ['nullable', 'string'],
+            'email'         => ['required', 'email', 'unique:users,email'],
+            'senha'         => ['required', 'string', 'min:6'],
         ]);
 
-        // hash da senha antes de salvar
         $data['senha'] = bcrypt($data['senha']);
 
+        
         $path = '';
-        if ($request->File('caminho_foto')) {
+        if ($request->hasFile('caminho_foto')) {
+            
             $path = $request->file('caminho_foto')->store('images', 'public');
         }
         $data['caminho_foto'] = $path;
@@ -68,34 +69,33 @@ class UserController extends Controller
         }
 
         $data = $request->validate([
-            'nome'         => ['sometimes', 'nullable', 'string', 'min:2'],
-            'data_nasc'    => ['sometimes', 'nullable', 'date'],
-            'peso'         => ['sometimes', 'nullable', 'numeric'],
-            'altura'       => ['sometimes', 'nullable', 'numeric'],
-            'tipo_sangue'  => ['sometimes', 'nullable', 'string', 'max:5'],
-            'caminho_foto' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-            'cep'          => ['sometimes', 'nullable', 'string', 'max:9'],
-            'logradouro'   => ['sometimes', 'nullable', 'string'],
-            'numero'       => ['sometimes', 'nullable', 'string'],
-            'bairro'       => ['sometimes', 'nullable', 'string'],
-            'cidade'       => ['sometimes', 'nullable', 'string'],
-            'email'        => ['sometimes', 'nullable', 'email', "unique:users,email,{$id}"],
-            'senha'        => ['sometimes', 'nullable', 'string', 'min:6'],
+            'nome'          => ['sometimes', 'nullable', 'string', 'min:2'],
+            'data_nasc'     => ['sometimes', 'nullable', 'date'],
+            'peso'          => ['sometimes', 'nullable', 'numeric'],
+            'altura'        => ['sometimes', 'nullable', 'numeric'],
+            'tipo_sangue'   => ['sometimes', 'nullable', 'string', 'max:5'],
+            'caminho_foto'  => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'cep'           => ['sometimes', 'nullable', 'string', 'max:9'],
+            'logradouro'    => ['sometimes', 'nullable', 'string'],
+            'numero'        => ['sometimes', 'nullable', 'string'],
+            'bairro'        => ['sometimes', 'nullable', 'string'],
+            'cidade'        => ['sometimes', 'nullable', 'string'],
+            'email'         => ['sometimes', 'nullable', 'email', "unique:users,email,{$id}"],
+            'senha'         => ['sometimes', 'nullable', 'string', 'min:6'],
         ]);
 
-        if (isset($data['senha'])) {
-           
+        if (array_key_exists('senha', $data) && !is_null($data['senha'])) {
             $data['senha'] = bcrypt($data['senha']);
         }
 
-        if ($request->File('caminho_foto')) {
+        if ($request->hasFile('caminho_foto')) {
             $path = $request->file('caminho_foto')->store('images', 'public');
             $data['caminho_foto'] = $path;
         }
 
-        $user->update($data);
+        $user->fill($data)->save();
 
-        return response()->json($user);
+        return response()->json($user->fresh(), 200);
     }
 
     public function show($id)
