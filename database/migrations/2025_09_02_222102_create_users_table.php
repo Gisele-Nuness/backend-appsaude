@@ -14,25 +14,25 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $t) {
             $t->id();
 
-            // cadastro (passo 1)
             $t->string('nome');
             $t->date('data_nasc')->nullable();
-            $t->decimal('peso', 5, 2)->nullable();    // ex.: 99.50
-            $t->decimal('altura', 4, 2)->nullable();  // ex.: 1.75
-            $t->string('tipo_sangue', 5)->nullable(); // ex.: O+, A-
-            $t->string('caminho_foto')->nullable();   // caminho da foto no storage
+            $t->decimal('peso', 5, 2)->nullable();
+            $t->decimal('altura', 4, 2)->nullable();
+            $t->string('tipo_sangue', 5)->nullable();
+            $t->string('caminho_foto')->nullable();
 
-            // cadastro2 (passo 2)
             $t->string('cep', 9)->nullable();
             $t->string('logradouro')->nullable();
             $t->string('numero')->nullable();
             $t->string('bairro')->nullable();
             $t->string('cidade')->nullable();
 
-            // cadastro3 (passo 3)
+            
             $t->string('email')->unique();
-            $t->string('senha'); // será armazenada com hash
+            $t->string('senha');
 
+            $t->softDeletes();
+            
             $t->timestamps();
         });
     }

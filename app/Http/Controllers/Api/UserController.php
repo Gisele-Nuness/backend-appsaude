@@ -93,7 +93,7 @@ class UserController extends Controller
             $data['caminho_foto'] = $path;
         }
 
-        $user->fill($data)->save();
+        $user->update($data);
 
         return response()->json($user->fresh(), 200);
     }
