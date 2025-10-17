@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserController extends Controller
 {
     public function store(Request $request)
@@ -29,10 +30,10 @@ class UserController extends Controller
 
         $data['senha'] = bcrypt($data['senha']);
 
-        
+
         $path = '';
         if ($request->hasFile('caminho_foto')) {
-            
+
             $path = $request->file('caminho_foto')->store('images', 'public');
         }
         $data['caminho_foto'] = $path;
@@ -58,7 +59,13 @@ class UserController extends Controller
             return response()->json(['ok' => false, 'message' => 'Senha incorreta.'], 401);
         }
 
-        return response()->json(['ok' => true, 'user' => $user]);
+        $token = $user->createToken('app-saude')->plainTextToken;
+
+        return response()->json([
+            'ok'   => true,
+            'user' => $user,
+            'token' => $token,
+        ], 200);
     }
 
     public function update(Request $request, $id)
