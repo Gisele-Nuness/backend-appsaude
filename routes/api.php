@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\AlergiaController;
+use App\Http\Controllers\Api\GlicemiaController;
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -27,3 +28,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/alergias/{alergia}', [AlergiaController::class, 'update']);
     Route::delete('/alergias/{alergia}', [AlergiaController::class, 'destroy']); 
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    
+     Route::get('glicemias', [GlicemiaController::class, 'index']);
+     Route::post('glicemias', [GlicemiaController::class, 'store']);
+     Route::get('glicemias/{id}', [GlicemiaController::class, 'show']);
+     Route::put('glicemias/{id}', [GlicemiaController::class, 'update']);
+     Route::delete('glicemias/{id}', [GlicemiaController::class, 'destroy']);
+    
+}); 
